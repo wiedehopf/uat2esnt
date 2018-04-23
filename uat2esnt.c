@@ -615,6 +615,8 @@ static uint32_t checksum(uint8_t *message, int n)
     return rem;
 }
 
+static uint8_t signal_strength = 0;
+
 static void checksum_and_send(uint8_t *frame, int len, uint32_t parity)
 {
     int j;
@@ -624,20 +626,29 @@ static void checksum_and_send(uint8_t *frame, int len, uint32_t parity)
     frame[len-2] = (rem & 0x00FF00) >> 8;
     frame[len-1] = (rem & 0x0000FF);
 
-    fprintf(stdout, "*");
+    fprintf(stdout, "<000000000000%02X", signal_strength);
+    //fprintf(stdout, "*");
+    
     for (j = 0; j < len; j++)
         fprintf(stdout, "%02X", frame[j]);
     fprintf(stdout, ";\n");
     fflush(stdout);
 }
 
-static void generate_esnt(struct uat_adsb_mdb *mdb)
+static void generate_esnt(struct uat_adsb_mdb *mdb, float ss)
 {
+    double ss_W = pow(10.0, ss / 10.0);
+    int sig = round(sqrt(ss_W) * 255.0);
+    if (ss_W > 0 && sig < 1)
+        sig = 1;
+    if (sig > 255)
+        sig = 255;
+
+    signal_strength = (uint8_t)sig;
     maybe_send_surface_position(mdb);
     maybe_send_air_position(mdb);
     maybe_send_air_velocity(mdb);
     maybe_send_callsign(mdb);
-
 }
 
 static int use_tisb = 1;
@@ -662,7 +673,7 @@ static void handle_frame(frame_type_t type, uint8_t *frame, int len, void *extra
         uat_decode_adsb_mdb(frame, &mdb);
 
         if (should_send(&mdb)) {
-            generate_esnt(&mdb);
+            generate_esnt(&mdb, ss);
         }
     }
 }        

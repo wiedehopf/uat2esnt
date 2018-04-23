@@ -73,7 +73,7 @@ static void dump_raw_message(char updown, uint8_t *data, int len, int rs_errors,
         fprintf(stdout, "%02x", data[i]);
     }
 
-    fprintf(stdout, ";ss=%.1f", signal_strength);
+    fprintf(stdout, ";ss=%.2f", signal_strength);
 
     if (rs_errors)
         fprintf(stdout, ";rs=%d", rs_errors);
@@ -188,7 +188,7 @@ static float calc_power(uint16_t *samples, unsigned int len)
         power += (uint32_t)mag * (uint32_t)mag;
     }
 
-    float out_power = power / 65535.0 / 65535.0 / len;
+    double out_power = power / 65535.0 / 65535.0 / len;
     return 10 * log10(out_power);
 }
 
