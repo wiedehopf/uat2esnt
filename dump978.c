@@ -154,41 +154,41 @@ static float calc_power(uint16_t *samples, unsigned int len)
     uint16_t *in = samples;
     unsigned int i, nsamples = len;
     uint64_t power = 0;
-    uint16_t mag;
+    uint32_t mag;
 
     // unroll this a bit
     for (i = 0; i < (nsamples>>3); ++i) {
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
 
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
 
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
 
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
 
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
 
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
 
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
 
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
     }
 
     for (i = 0; i < (nsamples&7); ++i) {
         mag = iqmagnitude[*in++];
-        power += (uint32_t)mag * (uint32_t)mag;
+        power += mag * mag;
     }
 
-    double out_power = power / 65535.0 / 65535.0 / len;
+    double out_power = power / (65535.0 * 65535.0 * len);
     return 10 * log10(out_power);
 }
 
