@@ -2,6 +2,11 @@
 
 Experimental demodulator/decoder for 978MHz UAT signals.
 
+## Note from TanerH
+Minor change to be slightly better (safer) parsing of the options to pull out
+signal strength, and support both this dump978's format of `ss=` as well as the
+dump978-fa from FlightAware, which uses `rssi=`.
+
 ## A note about future development
 
 I'm in Europe which doesn't use UAT, so there won't be much spontaneous
