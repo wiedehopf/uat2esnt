@@ -150,12 +150,33 @@ static int process_line(struct dump978_reader *reader, frame_handler_t handler, 
     ++p;
     while (p < end) {
         int byte;
-                
+
+        /*
+         * If we hit a semicolon, the rest of the line is "extra info", like timestmap, RSSI, etc.
+         * Try to parse some of it...
+         */
         if (p[0] == ';') {
-            p++;
+            int done = 0;
             float signal_strength = 0;
-            if (p[0] == 's')
-                sscanf(p, "ss=%f;", &signal_strength);
+            p++;
+
+            while (*p && !done) {
+                if (!strncmp(p, "ss=", 3))
+                    sscanf(p, "ss=%f;", &signal_strength);
+                if (!strncmp(p, "rssi=", 5))
+                    sscanf(p, "rssi=%f;", &signal_strength);
+                // if (!strncmp(p, "t=", 2))
+                //     sscanf(p, "t=%f;", &timestamp);
+               /* Advance until next semicolon (or end)... */
+               while (*p && *p != ';') { p++; }
+
+               // Short-circuit and bail if we have SS - remove later if we want to parse other info
+               if (!*p || (signal_strength != 0)) {
+                       done = 1;
+               } else {
+                       p++;
+               }
+            }
 
             // ignore rest of line
             handler(frametype, reader->frame, len, handler_data, signal_strength);
