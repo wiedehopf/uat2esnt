@@ -631,8 +631,9 @@ static void checksum_and_send(uint8_t *frame, int len, uint32_t parity)
     
     for (j = 0; j < len; j++)
         fprintf(stdout, "%02X", frame[j]);
-    fprintf(stdout, ";\n");
-    fflush(stdout);
+
+    if (fprintf(stdout, ";\n") < 0 || fflush(stdout) != 0)
+        exit(1);
 }
 
 static void generate_esnt(struct uat_adsb_mdb *mdb, float ss)
