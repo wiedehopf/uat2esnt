@@ -1,4 +1,4 @@
-CFLAGS+=-O2 -g -Wall -Werror -Ifec
+CFLAGS+=-O2 -D_GNU_SOURCE -std=c11 -g -D_DEFAULT_SOURCE -Wall -Werror -Ifec
 LDFLAGS=
 LIBS=-lm
 CC=gcc

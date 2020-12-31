@@ -20,6 +20,8 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
 
 #include "uat.h"
 
@@ -122,6 +124,23 @@ struct uat_adsb_mdb {
     altitude_type_t sec_altitude_type;
     int32_t sec_altitude; // in feet
 };
+
+
+struct aircraft {
+    uint32_t addr;
+    uint32_t messages;
+    int64_t timeout;
+};
+
+static inline int64_t mstime(void) {
+    struct timeval tv;
+    int64_t mst;
+
+    gettimeofday(&tv, NULL);
+    mst = ((int64_t) tv.tv_sec)*1000;
+    mst += tv.tv_usec / 1000;
+    return mst;
+}
 
 //
 // Decode/display prototypes
