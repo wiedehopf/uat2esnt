@@ -126,7 +126,7 @@ struct uat_adsb_mdb {
 };
 
 
-struct aircraft {
+struct aircraftMin {
     uint32_t addr;
     uint32_t messages;
     int64_t timeout;

@@ -640,17 +640,17 @@ static int64_t next_purge;
 
 #define MAXAC 4096
 #define TIMEOUT (5 * 60 * 1000)
-static struct aircraft ac_table[MAXAC];
+static struct aircraftMin ac_table[MAXAC];
 static int len;
 
-static struct aircraft *get_ac(uint32_t addr) {
+static struct aircraftMin *get_ac(uint32_t addr) {
     for (int i = 0; i < len; i++) {
         if (ac_table[i].addr == addr)
             return &ac_table[i];
     }
     for (int i = 0; i < MAXAC; i++) {
         if (ac_table[i].addr == 0) {
-            ac_table[i] = (struct aircraft) { 0 };
+            ac_table[i] = (struct aircraftMin) { 0 };
             ac_table[i].addr = addr;
             if (i >= len)
                 len = i + 1;
@@ -667,7 +667,7 @@ static void purge_ac(int64_t now) {
             ac_table[i].messages--;
         // purge aircraft that haven't sent a message in TIMEOUT
         if (ac_table[i].addr && now > ac_table[i].timeout)
-            ac_table[i] = (struct aircraft) { 0 };
+            ac_table[i] = (struct aircraftMin) { 0 };
         // keep the table nice and small
         if (i == len && ac_table[i].addr == 0)
             len--;
@@ -685,7 +685,7 @@ static void generate_esnt(struct uat_adsb_mdb *mdb, float ss)
         next_purge = now + TIMEOUT;
     }
 
-    struct aircraft *a = get_ac(mdb->address);
+    struct aircraftMin *a = get_ac(mdb->address);
     if (!a)
         return;
 
