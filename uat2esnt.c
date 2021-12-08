@@ -626,12 +626,18 @@ static void checksum_and_send(uint8_t *frame, int len, uint32_t parity)
     frame[len-2] = (rem & 0x00FF00) >> 8;
     frame[len-1] = (rem & 0x0000FF);
 
-    fprintf(stdout, "<000000000000%02X", signal_strength);
-    //fprintf(stdout, "*");
-    
+#define MAGIC_UAT_TIMESTAMP  "FF004D4C4155"
+
+    // using format <-AVR: beast_ts+sigL+raw
+
+    // print start char, timestamp and signal level <TTTTTTTTTTTTSS
+    fprintf(stdout, "<" MAGIC_UAT_TIMESTAMP "%02X", signal_strength);
+
+    // print raw frame
     for (j = 0; j < len; j++)
         fprintf(stdout, "%02X", frame[j]);
 
+    // print ; and newline
     if (fprintf(stdout, ";\n") < 0 || fflush(stdout) != 0)
         exit(1);
 }
