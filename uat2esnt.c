@@ -700,8 +700,8 @@ static void generate_esnt(struct uat_adsb_mdb *mdb, float ss)
         a->timeout = now + TIMEOUT;
         a->messages++;
 
-        // let's require at least 3 messages before we send out info
-        if (a->messages < 3)
+        // let's require at least 2 messages before we send out info
+        if (a->messages < 2)
             return;
     }
 
