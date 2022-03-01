@@ -691,16 +691,19 @@ static void generate_esnt(struct uat_adsb_mdb *mdb, float ss)
         next_purge = now + TIMEOUT;
     }
 
-    struct aircraftMin *a = get_ac(mdb->address);
-    if (!a)
-        return;
+    if (mdb->address_qualifier == AQ_ADSB_ICAO) {
 
-    a->timeout = now + TIMEOUT;
-    a->messages++;
+        struct aircraftMin *a = get_ac(mdb->address);
+        if (!a)
+            return;
 
-    // let's require at least 3 messages before we send out info
-    if (a->messages < 3)
-        return;
+        a->timeout = now + TIMEOUT;
+        a->messages++;
+
+        // let's require at least 3 messages before we send out info
+        if (a->messages < 3)
+            return;
+    }
 
     double ss_W = pow(10.0, ss / 10.0);
     int sig = round(sqrt(ss_W) * 255.0);
